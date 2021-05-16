@@ -1,7 +1,8 @@
 let mongoose = require("mongoose");
-let db = require("../models");
+let db = require("../models/index.js");
+// const { Seeder } = require('mongo-seeding');
 
-mongoose.connect("mongodb://localhost/workout", {
+mongoose.connect("mongodb://localhost/workoutDB", {
   useNewUrlParser: true,
   useFindAndModify: false
 });
