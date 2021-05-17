@@ -23,7 +23,7 @@ app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/userdb", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutdb", { useNewUrlParser: true });
 
 
 app.get('/', (req, res) => {
@@ -37,21 +37,21 @@ app.get('/exercise', (req, res) => {
 });
 
 app.get('/api/workouts', (req, res) => {
-//   db.Workout.find({}, (error, data) => {
-//   if (error) {
-//     res.send(error);
-//   } else {
-//     res.json(data)
-//   }
-// });
-
-db.Workout.find({})
-.then(dbWorkout => {
-  res.json(dbWorkout);
-})
-.catch(err => {
-  res.json(err);
+  db.Workout.find({}, (error, data) => {
+  if (error) {
+    res.send(error);
+  } else {
+    res.json(data)
+  }
 });
+
+// db.Workout.find({})
+// .then(dbWorkout => {
+//   res.json(dbWorkout);
+// })
+// .catch(err => {
+//   res.json(err);
+// });
 });
 
 
