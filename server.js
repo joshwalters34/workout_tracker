@@ -2,8 +2,7 @@ const express = require("express");
 const logger = require("morgan");
 const mongojs = require("mongojs");
 const mongoose = require("mongoose");
-const Workout = require("./models")
-const router = require("express").Router();
+const path = require("path");
 
 // app.use(require("./routes/api.js"));
 const PORT = process.env.PORT || 3000;
@@ -33,15 +32,18 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutDB", {
 
 
 
-router.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname +'./public/index.html'))
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname +'/publicindex.html'))
 });
-router.get('/stats', (req, res) => {
-  res.sendFile(path.join(__dirname + './public/stats.html'))
+
+app.get('/stats', (req, res) => {
+  res.sendFile(path.join(__dirname +'/public/stats.html'))
 });
-router.get('/exercise', (req, res) => {
-  res.sendFile(path.join(__dirname + './public/exercise.html'))
+
+app.get('/exercise', (req, res) => {
+  res.sendFile(path.join(__dirname + '/public/exercise.html'))
 });
+
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
