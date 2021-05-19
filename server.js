@@ -3,8 +3,9 @@ const logger = require("morgan");
 const mongojs = require("mongojs");
 const mongoose = require("mongoose");
 const path = require("path");
+const apiRoutes = require("./routes/api/apiRoutes")
 
-// app.use(require("./routes/api.js"));
+
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -20,11 +21,12 @@ db.on("error", error => {
 
 
 
-
+// app.use('./apiRoutes', apiRoutes)
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
+app.use("/api", apiRoutes);
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutDB", { 
   useNewUrlParser: true,
   useFindAndModify: false
