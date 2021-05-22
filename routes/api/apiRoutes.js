@@ -62,7 +62,7 @@ router.post("/workouts", (req, res) => {
 // })
 
 router.put("/workouts/:id", (req, res) => {
-  db.workouts.updateOne({id:req.params.id}, {$push: {exercises: req.body, day:Date.now()}},
+  db.workouts.updateOne({id:req.params.id}, {$push: {exercises: req.body, day:Date.getDay()}},
     console.log(req.body),
     (error, data) => {
       if (error) {
@@ -72,5 +72,33 @@ router.put("/workouts/:id", (req, res) => {
       }
     }) 
 })
+
+// router.get('/workouts/range', (req, res) => {
+//   db.workouts.find({}, (error, data) => {
+//   if (error) {
+//     res.send(error);
+//   } else {
+//     res.json(data)
+//   }
+// });
+// });
+
+// router.get('/workouts/range', (req, res) => {
+//   db.workouts.aggregate([{ $match: {"date"}},
+    
+//     {$group: {
+//     totalWeight: { $sum: "$weight"},
+//     totalDuration: { $sum: "$duration"}
+//   }
+// }], (error, data) => {
+//   if (error) {
+//     res.send(error);
+//   } else {
+//     res.json(data)
+//   }
+// });
+// console.log(totalDuration);
+// });
+
 
 module.exports = router;
