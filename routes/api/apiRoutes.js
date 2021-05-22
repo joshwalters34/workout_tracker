@@ -1,18 +1,10 @@
 const router = require("express").Router();
-const {Workouts} = require("../../models/workout.js");
-const mongojs = require("mongojs");
-const databaseUrl = "workoutDB";
-const collections = ["workouts"];
+const Workouts = require("../../models/workout.js");
 
-const db = mongojs(databaseUrl, collections);
-
-db.on("error", error => {
-  console.log("Database Error:", error);
-});
 
 
 router.get('/workouts', (req, res) => {
-    db.workouts.find({}, (error, data) => {
+    Workouts.find({}, (error, data) => {
     if (error) {
       res.send(error);
     } else {
@@ -22,7 +14,7 @@ router.get('/workouts', (req, res) => {
 });
 
 router.get('/workouts/:id', (req, res) => {
-  db.workouts.findByOne({
+  Workouts.findByOne({
     _id: mongojs.ObjectID(req.params.id)
   }, (error, data) => {
   if (error) {
@@ -36,17 +28,15 @@ router.get('/workouts/:id', (req, res) => {
 router.post("/workouts", (req, res) => {
   console.log(req.body);
 
-  db.workouts.insert(req.body, (error, data) => {
-    if (error) {
-      res.send(error);
-    } else {
-      res.send(data);
-    }
+  Workouts.create(req.body).then((data) => {
+    res.json(data);
+  }).catch(err => {
+    res.json(err);
   });
 });
 
 // router.put("/workouts/:id", (req, res) => {
-//   db.workouts.findByIdAndUpdate({id: req.params.id},
+//   Workouts.findByIdAndUpdate({id: req.params.id},
 //     {
 //       $set: {
 //         exercises: req.body
@@ -62,43 +52,40 @@ router.post("/workouts", (req, res) => {
 // })
 
 router.put("/workouts/:id", (req, res) => {
-  db.workouts.updateOne({id:req.params.id}, {$push: {exercises: req.body, day:Date.getDay()}},
-    console.log(req.body),
-    (error, data) => {
-      if (error) {
-        res.send(error);
-      } else {
-        res.send(data);
+  Workouts.findByIdAndUpdate(req.params.id, {$push: {exercises: req.body}}).then(
+        (data) => {
+        res.json(data);
+      }).catch(err => {
+        res.json(err);
+      }); 
+});
+
+// router.get('/workouts/range', (req, res) => {
+//   Workouts.find({}, (error, data) => {
+//   if (error) {
+//     res.send(error);
+//   } else {
+//     res.json(data)
+//   }
+// });
+// });
+
+// var query = ModelName.find({}, null, {limit: 10, sort: {'epoch': -1}});
+// query.exec(function(err, docs) { ... });
+
+router.get('/workouts/range', (req, res) => {
+  Workouts.aggregate([
+    {
+      $addFields: {
+        totalDuration: { $sum: "$exercises.duration"}
       }
-    }) 
-})
-
-// router.get('/workouts/range', (req, res) => {
-//   db.workouts.find({}, (error, data) => {
-//   if (error) {
-//     res.send(error);
-//   } else {
-//     res.json(data)
-//   }
-// });
-// });
-
-// router.get('/workouts/range', (req, res) => {
-//   db.workouts.aggregate([{ $match: {"date"}},
-    
-//     {$group: {
-//     totalWeight: { $sum: "$weight"},
-//     totalDuration: { $sum: "$duration"}
-//   }
-// }], (error, data) => {
-//   if (error) {
-//     res.send(error);
-//   } else {
-//     res.json(data)
-//   }
-// });
-// console.log(totalDuration);
-// });
+    }
+  ])
+  .sort({ _id: -1 })
+  .limit(7)
+  .then(data => res.json(data))
+  .catch(err => res.json(err))
+});
 
 
 module.exports = router;
