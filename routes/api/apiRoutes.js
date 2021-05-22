@@ -62,7 +62,8 @@ router.post("/workouts", (req, res) => {
 // })
 
 router.put("/workouts/:id", (req, res) => {
-  db.workouts.updateOne({id:req.params.id}, {$set: {exercises: req.body}},
+  db.workouts.updateOne({id:req.params.id}, {$push: {exercises: req.body, day:Date.now()}},
+    console.log(req.body),
     (error, data) => {
       if (error) {
         res.send(error);
