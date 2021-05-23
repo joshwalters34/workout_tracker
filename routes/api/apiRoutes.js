@@ -3,26 +3,34 @@ const Workouts = require("../../models/workout.js");
 
 
 
-router.get('/workouts', (req, res) => {
-    Workouts.find({}, (error, data) => {
-    if (error) {
-      res.send(error);
-    } else {
-      res.json(data)
-    }
-  });
+// router.get('/workouts', (req, res) => {
+//     Workouts.find({}, (error, data) => {
+//     if (error) {
+//       res.send(error);
+//     } else {
+//       res.json(data)
+//     }
+//   });
+// });
+
+router.get("/workouts", (req, res) => {
+  Workouts.find({})
+    .then(data => {
+      res.json(data);
+    })
+    .catch(err => {
+      res.json(err);
+    });
 });
 
 router.get('/workouts/:id', (req, res) => {
-  Workouts.findByOne({
-    _id: mongojs.ObjectID(req.params.id)
-  }, (error, data) => {
-  if (error) {
-    res.send(error);
-  } else {
-    res.json(data)
-  }
-});
+  Workouts.find(req.params.id)
+  .then(data => {
+    res.json(data);
+  })
+  .catch(err => {
+    res.json(err);
+  });
 });
 
 router.post("/workouts", (req, res) => {
@@ -85,6 +93,7 @@ router.get('/workouts/range', (req, res) => {
   .limit(7)
   .then(data => res.json(data))
   .catch(err => res.json(err))
+  console.log("totalDuration" + totalDuration)
 });
 
 
