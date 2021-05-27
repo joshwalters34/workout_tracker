@@ -15,23 +15,27 @@ router.get('/workouts/range', (req, res) => {
   .sort({ _id: -1 })
   .limit(7)
   .then(data => {
-    console.log("--------------")
-    console.log(data);
-    return res.json(data);
+      return res.json(data);
   })
   .catch(err => res.json(err));
   
 });
 
-router.get("/workouts", (req, res) => {
-  Workouts.find({})
+
+router.get('/workouts/', (req, res) => {
+  Workouts.aggregate([
+    {$addFields: {
+      totalDuration: { $sum: "$exercises.duration"}
+    }}
+  ])
   .then(data => {
-      res.json(data);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
+    res.json(data);
+    
+  })
+  .catch(err => {
+    res.json(err);
+  });
+})
 
 router.get('/workouts/:id', (req, res) => {
   Workouts.find(req.params.id)
